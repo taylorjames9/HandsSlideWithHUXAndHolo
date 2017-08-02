@@ -6,5 +6,5 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/TutorialSetup_Example/TutorialSetup_Example.unity
-    guid: aaf03d2fade92f745a53e42e059aaf1d
+    path: Assets/HandsSlideApart_Example/HandSlideApart.unity
+    guid: aca45ad713ac34da4a2a892dad8967c4
