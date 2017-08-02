@@ -35,21 +35,26 @@ public class HandManager : MonoBehaviour
 
 		CheckBaseDistanceBetweenHands();
 
-		if (Input.GetKeyDown ("space")){
+#if UNITY_EDITOR
+        if (Input.GetKeyDown (KeyCode.Space)){
 			Debug.Log("Engaged ExplodingObject");
 			ExplodingObject_01.Engaged = true;
 			baseDistBtwnHands = CheckDistanceBetweenHands();
 			totalDistanceForExpansion = MaxHandExtension - baseDistBtwnHands;
 		}
-		
-		//percentage of total expansion = current hand distance / totalDistance available ForExpansion 
-		//(length between fingers of two outstretched arms)
-		PercentHandExpansion();
-    }
-
-    void LateUpdate()
-    {
-
+#endif
+#if UNITY_WSA
+        if(HandLeft.transform.GetComponent<HUX.Utility.LocalHandInput>().Pressed || HandRight.transform.GetComponent<HUX.Utility.LocalHandInput>().Pressed)
+        {
+            Debug.Log("Engaged ExplodingObject");
+            ExplodingObject_01.Engaged = true;
+            baseDistBtwnHands = CheckDistanceBetweenHands();
+            totalDistanceForExpansion = MaxHandExtension - baseDistBtwnHands;
+        }
+#endif
+        //percentage of total expansion = current hand distance / totalDistance available ForExpansion 
+        //(length between fingers of two outstretched arms)
+        PercentHandExpansion();
     }
 
 	float CheckDistanceBetweenHands(){
