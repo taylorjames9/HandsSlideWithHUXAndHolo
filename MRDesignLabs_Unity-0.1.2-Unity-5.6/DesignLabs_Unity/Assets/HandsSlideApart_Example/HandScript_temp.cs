@@ -11,14 +11,17 @@ public class HandScript_temp : MonoBehaviour {
 	private HandType hand; 
 
 	[SerializeField]
-	private float moveSpeed = 0.5f;
+	private float moveSpeed;
 
     [SerializeField]
     private int handNumber;
+
+    private int count;
 	
 	// Update is called once per frame
 	void Update () {
 
+#if UNITY_EDITOR
         if (hand.Equals(HandType.LeftHand))
         {
             if (Input.GetKey(KeyCode.Z))
@@ -33,11 +36,19 @@ public class HandScript_temp : MonoBehaviour {
             else if (Input.GetKey(KeyCode.M))
                 transform.Translate(moveSpeed * Time.deltaTime, 0, 0);
         }
-	}
+
+#endif
+    }
 
     private void LateUpdate()
     {
-        //transform.position = HUX.Focus.FocusManager.Instance.Focusers[0].
-        transform.position = InputSources.Instance.hands.GetWorldPosition(handNumber);
+#if !UNITY_EDITOR
+        if(GetComponent<HUX.Utility.LocalHandInput>().IsTracked){
+            transform.position = GetComponent<HUX.Utility.LocalHandInput>().LocalPosition;
+        } else {
+            HandManager.Instance.Engaged = false;
+        }
+
+#endif
     }
 }

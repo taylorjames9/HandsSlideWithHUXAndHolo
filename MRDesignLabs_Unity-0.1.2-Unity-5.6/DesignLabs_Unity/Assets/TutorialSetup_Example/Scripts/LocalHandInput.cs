@@ -16,6 +16,7 @@ namespace HUX.Utility
     public class LocalHandInput : InteractibleObject
     {
         public InputSourceHands.HandednessEnum Handedness = InputSourceHands.HandednessEnum.Right;
+        public bool IsTracked { get; set; }
 
         public float MinConfidence = 0.5f;
 
@@ -141,6 +142,7 @@ namespace HUX.Utility
                 InputSourceHands.CurrentHandState handState = InputSources.Instance.hands.GetHandState(Handedness, MinConfidence);
                 if (handState != null) {
                     // Check to see if the user is pressing
+                    IsTracked = true;
                     if (handState.Pressed) {
                         handPosThisFrame = handState.Position;
                         // If we're not pressing already...
@@ -167,6 +169,7 @@ namespace HUX.Utility
                             timePressed = Time.time;
                         }
                     } else {
+                        IsTracked = false;
                         pressed = false;
                         if (!KeepValuesOnRelease) {
                             localPosition = Vector3.zero;

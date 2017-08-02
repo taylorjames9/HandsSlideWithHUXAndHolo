@@ -30,11 +30,11 @@ public class ExplodingPiece : MonoBehaviour {
 	void Update () {
 		//if hand manager hands is engaged
 		if(myExplodingParent.Engaged){
-			if(HandManager.Instance.PercentageOfTotalHandExpansion <1.0){
+			//if(HandManager.Instance.PercentageOfTotalHandExpansion <1.0){
 			//mylocation is going to be ... 
 			transform.position = startPos + endPos*HandManager.Instance.PercentageOfTotalHandExpansion;
-			}
-		}
+			//}
+		} 
 	}
 
 	void CalculateStartPos(){
@@ -46,12 +46,14 @@ public class ExplodingPiece : MonoBehaviour {
 		GameObject go = Instantiate(myExplodingParent.EndPointMarker, endPos, Quaternion.identity);
 	}
 	void CalculateDistanceToCenter(){
-		Vector3.Distance(transform.position, myExplodingParent.CenterPiece.position);
-	}
-	void FindDirectionToCenter(){
+		//Vector3.Distance(transform.position, myExplodingParent.CenterPiece.position);
+        Vector3.Distance(transform.position, myExplodingParent.transform.position);
+
+    }
+    void FindDirectionToCenter(){
 		//// Gets a vector that points from the player's position to the target's.
 		//var heading = target.position - player.position;
-		directionToCenter = myExplodingParent.CenterPiece.transform.position - transform.position;
+		directionToCenter = myExplodingParent.transform.position - transform.position;
 	}
 	void Find_OPP_DirectionToCenter(){
 		///Gets a vector that points from the player's position to the target's.
@@ -65,7 +67,7 @@ public class ExplodingPiece : MonoBehaviour {
 
 	float MyDistToEndPos(){
 		float myDist = Vector3.Distance(transform.position, endPos);
-		Debug.Log("My Distance to end point"+myDist);
+		//Debug.Log("My Distance to end point"+myDist);
 		return myDist;
 	}
 

@@ -8,7 +8,11 @@ public class HandManager : MonoBehaviour
 
 	public ExplodingObject ExplodingObject_01;
 
-	public const float MaxHandExtension = 10.0f;
+    public float MaxHandExtension;
+
+    public TextMesh HandDist_Text;
+    public TextMesh HandDistNormalized_Text;
+    public TextMesh Percentage_Text;
 
     public HandScript_temp HandLeft;
     public HandScript_temp HandRight;
@@ -43,10 +47,10 @@ public class HandManager : MonoBehaviour
 			totalDistanceForExpansion = MaxHandExtension - baseDistBtwnHands;
 		}
 #endif
-#if UNITY_WSA
+#if !UNITY_EDITOR
         if(HandLeft.transform.GetComponent<HUX.Utility.LocalHandInput>().Pressed || HandRight.transform.GetComponent<HUX.Utility.LocalHandInput>().Pressed)
         {
-            Debug.Log("Engaged ExplodingObject");
+            //Debug.Log("Engaged ExplodingObject");
             ExplodingObject_01.Engaged = true;
             baseDistBtwnHands = CheckDistanceBetweenHands();
             totalDistanceForExpansion = MaxHandExtension - baseDistBtwnHands;
@@ -61,12 +65,19 @@ public class HandManager : MonoBehaviour
 
 		//Debug.Log("Dist left to right : "+Vector3.Distance(HandLeft.transform.position, HandRight.transform.position));
 		distBtwnHands = Vector3.Distance(HandLeft.transform.position, HandRight.transform.position);
+        HandDist_Text.text = distBtwnHands.ToString();
 		return distBtwnHands;
 	}
 
     float DistanceBetweenHandsNormalized(){
-
-        return distBtwnHands - baseDistBtwnHands;
+        if (distBtwnHands - baseDistBtwnHands > 0)
+        {
+            HandDistNormalized_Text.text = (distBtwnHands - baseDistBtwnHands).ToString();
+            return distBtwnHands - baseDistBtwnHands;
+        } else
+        {
+            return 0;
+        }
     }
 
     void CheckBaseDistanceBetweenHands()
@@ -85,9 +96,9 @@ public class HandManager : MonoBehaviour
 	float PercentHandExpansion(){
 		distBtwnHands = CheckDistanceBetweenHands();
         distBetweenHandsNormalized = DistanceBetweenHandsNormalized();
-		//percentage of total expansion = current hand distance / totalDistanceForExpansion
-		percentageOfTotalHandExpansion = distBetweenHandsNormalized/totalDistanceForExpansion;
-		//Debug.Log("Percentage of hand Expansion "+percentageOfTotalHandExpansion);
+        ////percentageOfTotalHandExpansion = distBetweenHandsNormalized/totalDistanceForExpansion;
+        percentageOfTotalHandExpansion = distBtwnHands / MaxHandExtension;
+        Percentage_Text.text = percentageOfTotalHandExpansion.ToString();
 		return percentageOfTotalHandExpansion;
 	}
 

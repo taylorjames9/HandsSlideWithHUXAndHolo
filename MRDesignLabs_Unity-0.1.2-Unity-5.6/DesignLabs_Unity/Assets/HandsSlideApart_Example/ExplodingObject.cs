@@ -10,7 +10,7 @@ public class ExplodingObject : MonoBehaviour {
 
 	public float ExplosionMultiplier = 100.0f;
 
-	public Transform CenterPiece;
+	//public Transform CenterPiece;
 
 	//if all pieces are not direct children of the parent object, then populate ExplodingPiecesList manually
 	public bool AllPiecesAreDirectChildren;

@@ -134,12 +134,19 @@ public class TutorialManager_4Tut : InteractionReceiver {
                     HandCoach.Highlight = HandCoach.HandVisibilityEnum.Both;
                     HandCoach.RightGesture = HandCoach.HandGestureEnum.Ready;
                     HandCoach.LeftGesture = HandCoach.HandGestureEnum.Ready;
-#if UNITY_WSA
+#if !UNITY_EDITOR
                     if (HandCoach.Tracking == HandCoach.HandVisibilityEnum.Both)
                     {
                         progress += Time.deltaTime * 4;
                     }
                     if (progress >= minProgressAmount)
+                    {
+                        NextPage();
+                    }
+                    PushPercentage();
+                    if (InputSources.Instance.hands.menuGesture.PressedOnce || 
+                    HandManager.Instance.HandLeft.transform.GetComponent<HUX.Utility.LocalHandInput>().Pressed ||
+                    HandManager.Instance.HandRight.transform.GetComponent<HUX.Utility.LocalHandInput>().Pressed)
                     {
                         NextPage();
                     }
@@ -157,12 +164,22 @@ public class TutorialManager_4Tut : InteractionReceiver {
                     HandCoach.RightGesture = HandCoach.HandGestureEnum.TapHold;
                     HandCoach.LeftGesture = HandCoach.HandGestureEnum.TapHold;
                     HandCoach.CheckTracking = HandCoach.HandVisibilityEnum.Both;
- #if UNITY_WSA
+                    HandCoach.Ghosting = HandCoach.HandVisibilityEnum.Both;
+
+
+#if !UNITY_EDITOR
                     if (Progress > minProgressAmount)
                     {
                         NextPage();
                     }
                     break;
+                    PushPercentage();
+                    if (InputSources.Instance.hands.menuGesture.PressedOnce || 
+                    HandManager.Instance.HandLeft.transform.GetComponent<HUX.Utility.LocalHandInput>().Pressed ||
+                    HandManager.Instance.HandRight.transform.GetComponent<HUX.Utility.LocalHandInput>().Pressed)
+                    {
+                        NextPage();
+                    }
 #endif
 #if UNITY_EDITOR
                     if (Input.GetKeyDown(KeyCode.Space))
@@ -173,6 +190,7 @@ public class TutorialManager_4Tut : InteractionReceiver {
                     break;
                 case "TutorialSegment_03":
                     HandCoach.Visibility = HandCoach.HandVisibilityEnum.Both;
+                    HandCoach.Ghosting = HandCoach.HandVisibilityEnum.Both;
                     HandCoach.RightGesture = HandCoach.HandGestureEnum.TapHold;
                     HandCoach.LeftGesture = HandCoach.HandGestureEnum.TapHold;
                     HandCoach.RightDirection = HandCoach.HandDirectionEnum.Right;
@@ -185,7 +203,7 @@ public class TutorialManager_4Tut : InteractionReceiver {
                 //add as many segments as you need
 
                 default:
-                    Debug.LogError("No segment found in Pages List that matches that name");
+                    //Debug.LogError("No segment found in Pages List that matches that name");
                     break;
             }
             yield return null;
@@ -198,11 +216,11 @@ public class TutorialManager_4Tut : InteractionReceiver {
         if (percentage <= 100)
         {
             percentage += Time.deltaTime*30.0f;
-            percentageText.text = percentage.ToString("F0") + "%";
+            //percentageText.text = percentage.ToString("F0") + "%";
         }
         else
         {
-            percentageText.gameObject.SetActive(false);
+            //percentageText.gameObject.SetActive(false);
             NextPage();
         }
     }
