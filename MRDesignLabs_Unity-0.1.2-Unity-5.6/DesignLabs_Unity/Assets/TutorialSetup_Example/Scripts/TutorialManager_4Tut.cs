@@ -26,7 +26,6 @@ public class TutorialManager_4Tut : InteractionReceiver {
     private float progress;
 
     [SerializeField]
-    [Range(0, 15)]
     private int page;
 
     private bool reachedEnd = false;
@@ -173,8 +172,15 @@ public class TutorialManager_4Tut : InteractionReceiver {
 #endif
                     break;
                 case "TutorialSegment_03":
-
-                        break;
+                    HandCoach.Visibility = HandCoach.HandVisibilityEnum.Both;
+                    HandCoach.RightGesture = HandCoach.HandGestureEnum.TapHold;
+                    HandCoach.LeftGesture = HandCoach.HandGestureEnum.TapHold;
+                    HandCoach.RightDirection = HandCoach.HandDirectionEnum.Right;
+                    HandCoach.RightMovement = HandCoach.HandMovementEnum.PingPong;
+                    HandCoach.LeftDirection = HandCoach.HandDirectionEnum.Left;
+                    HandCoach.LeftMovement = HandCoach.HandMovementEnum.PingPong;
+                    HandCoach.CheckTracking = HandCoach.HandVisibilityEnum.Both;
+                    break;
 
                 //add as many segments as you need
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using HUX;
 
 public class HandScript_temp : MonoBehaviour {
 
@@ -11,6 +12,9 @@ public class HandScript_temp : MonoBehaviour {
 
 	[SerializeField]
 	private float moveSpeed = 0.5f;
+
+    [SerializeField]
+    private int handNumber;
 	
 	// Update is called once per frame
 	void Update () {
@@ -30,4 +34,10 @@ public class HandScript_temp : MonoBehaviour {
                 transform.Translate(moveSpeed * Time.deltaTime, 0, 0);
         }
 	}
+
+    private void LateUpdate()
+    {
+        //transform.position = HUX.Focus.FocusManager.Instance.Focusers[0].
+        transform.position = InputSources.Instance.hands.GetWorldPosition(handNumber);
+    }
 }
