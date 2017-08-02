@@ -12,15 +12,9 @@ public class TutorialManager_4Tut : InteractionReceiver {
 
 
     public List<GameObject> Pages;
-    public GameObject Arrow;
-    public Color ArrowColor;
     public HandCoach HandCoach;
-    public float MinThrusterAmount = 1f;
     public TextMesh percentageText;
     private float percentage;
-
-    [SerializeField]
-    private float segmentProgressMultiplier;
 
     [SerializeField]
     private string currentPageName;
@@ -32,6 +26,7 @@ public class TutorialManager_4Tut : InteractionReceiver {
     private float progress;
 
     [SerializeField]
+    [Range(0, 15)]
     private int page;
 
     private bool reachedEnd = false;
@@ -43,9 +38,7 @@ public class TutorialManager_4Tut : InteractionReceiver {
     {
         Activate();
     }
-    /// <summary>
-    /// Set any relevant starting conditions for the tutorial
-    /// </summary>
+
     public void Activate()
     {
         gameObject.SetActive(true);
@@ -53,9 +46,7 @@ public class TutorialManager_4Tut : InteractionReceiver {
         SetPage(page);
         StartCoroutine(DoTutorialOverTime());
     }
-    /// <summary>
-    /// Goes to next page/segment of tutorial
-    /// </summary>
+
     public void NextPage()
     {
         page++;
@@ -68,9 +59,6 @@ public class TutorialManager_4Tut : InteractionReceiver {
         SetPage(page);
     }
 
-    /// <summary>
-    /// Goes to prev page/segment of tutorial
-    /// </summary>
     public void PrevPage()
     {
         page--;
@@ -79,10 +67,7 @@ public class TutorialManager_4Tut : InteractionReceiver {
         progress = 0f;
         SetPage(page);
     }
-    /// <summary>
-    /// Resets the tutorial by reloading the scene. 
-    /// Note: A real tutorial inside of a game will require a way to reset all relevant variables in order to restart the tutorial experience
-    /// </summary>
+
     public void StartOver()
     {
         // get the current scene name 
@@ -92,9 +77,6 @@ public class TutorialManager_4Tut : InteractionReceiver {
         SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
     }
 
-    /// <summary>
-    /// Returns the current page/segment name of the tutorial
-    /// </summary>
     public string CurrentPageName
     {
         get
@@ -107,10 +89,6 @@ public class TutorialManager_4Tut : InteractionReceiver {
         }
     }
 
-    /// <summary>
-    /// Extends the OnTapped functionality inherited from InteractionReceiver
-    /// Specify the names of the gameObjects that will be tapped in the course of your tutorial
-    /// </summary>
     protected override void OnTapped(GameObject obj, InteractionManager.InteractionEventArgs eventArgs)
     {
         base.OnTapped(obj, eventArgs);
@@ -143,11 +121,7 @@ public class TutorialManager_4Tut : InteractionReceiver {
         }
     }
 
-    /// <summary>
-    /// The gameobject for each Page (or section) of the tutorial should correspond to a case in this tutorial
-    /// This coroutine will step through each page/segment of the tutorial, moving to the next one when a.) user hits Next button 
-    /// or b.) progress fills up to a point where user has spent enough time in the tutorial segment
-    /// </summary>
+
     IEnumerator DoTutorialOverTime()
     {
         while (!reachedEnd)
@@ -155,13 +129,13 @@ public class TutorialManager_4Tut : InteractionReceiver {
             switch (CurrentPageName)
             {
                 case "TutorialSegment_01":
-                    LanderInput_4Tut.Instance.gameObject.SetActive(false);
                     HandCoach.Visibility = HandCoach.HandVisibilityEnum.Both;
                     HandCoach.CheckTracking = HandCoach.HandVisibilityEnum.Both;
                     HandCoach.Ghosting = HandCoach.HandVisibilityEnum.None;
                     HandCoach.Highlight = HandCoach.HandVisibilityEnum.Both;
                     HandCoach.RightGesture = HandCoach.HandGestureEnum.Ready;
                     HandCoach.LeftGesture = HandCoach.HandGestureEnum.Ready;
+#if UNITY_WSA
                     if (HandCoach.Tracking == HandCoach.HandVisibilityEnum.Both)
                     {
                         progress += Time.deltaTime * 4;
@@ -170,47 +144,37 @@ public class TutorialManager_4Tut : InteractionReceiver {
                     {
                         NextPage();
                     }
+#endif
+#if UNITY_EDITOR
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        NextPage();
+                    }
+#endif
+
                     break;
                 case "TutorialSegment_02":
-                    LanderInput_4Tut.Instance.gameObject.SetActive(true);
                     HandCoach.Visibility = HandCoach.HandVisibilityEnum.Both;
-                    HandCoach.RightGesture = HandCoach.HandGestureEnum.Tap;
-                    HandCoach.LeftGesture = HandCoach.HandGestureEnum.Tap;
-                    HandCoach.LeftMovement = HandCoach.HandMovementEnum.PingPong;
-                    HandCoach.RightMovement = HandCoach.HandMovementEnum.PingPong;
-
+                    HandCoach.RightGesture = HandCoach.HandGestureEnum.TapHold;
+                    HandCoach.LeftGesture = HandCoach.HandGestureEnum.TapHold;
+                    HandCoach.CheckTracking = HandCoach.HandVisibilityEnum.Both;
+ #if UNITY_WSA
                     if (Progress > minProgressAmount)
                     {
-                        Debug.Log("lander y position before switching to next segment " + LanderInput_4Tut.Instance.transform.position.y);
-                        LanderInput_4Tut.Instance.gameObject.SetActive(false);
                         NextPage();
                     }
                     break;
-                case "TutorialSegment_03":
-
-                     HandCoach.RightGesture = HandCoach.HandGestureEnum.TapHold;
-                     HandCoach.LeftGesture = HandCoach.HandGestureEnum.TapHold;
-
-                     percentageText.gameObject.SetActive(true);
-                     //we shouldn't be referring to the lunar lander here
-                     if (InputSources.Instance.hands.IsHandVisible(InputSourceHands.HandednessEnum.Left) && InputSources.Instance.hands.IsHandVisible(InputSourceHands.HandednessEnum.Right))
-                     {
-                         if ((LanderInput_4Tut.Instance.LeftHandInput.Pressed && LanderInput_4Tut.Instance.RightHandInput.Pressed))
-                         {
-                             PushPercentage();
-                         }
-                     } 
+#endif
 #if UNITY_EDITOR
-                    if (Input.GetKey(KeyCode.Space))
+                    if (Input.GetKeyDown(KeyCode.Space))
                     {
-                        Debug.Log("We should now be pushing percentage");
-                        PushPercentage();
+                        NextPage();
                     }
 #endif
                     break;
-                case "TutorialSegment_04":
-                    //Congrats
-                    break;
+                case "TutorialSegment_03":
+
+                        break;
 
                 //add as many segments as you need
 
@@ -222,15 +186,12 @@ public class TutorialManager_4Tut : InteractionReceiver {
         }
     }
 
-    /// <summary>
-    /// Increases the progress of the tutorial segment progress bar until it hits a threshold
-    /// </summary>
     void PushPercentage()
     {
         //if Text is less than 100 percent, Text Counts upward
         if (percentage <= 100)
         {
-            percentage += Time.deltaTime*segmentProgressMultiplier;
+            percentage += Time.deltaTime*30.0f;
             percentageText.text = percentage.ToString("F0") + "%";
         }
         else
